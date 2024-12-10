@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style-index.css">
+    <link rel="stylesheet" href="../static/css/model.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo">Expense Tracker</h1>
+            <nav>
+                <button id="menu-toggle" aria-label="Toggle navigation">
+                    <span class="menu-icon"></span>
+                </button>
+                <ul id="menu">
+                    <li>
+                        <p style="margin-left: 10px;">₹ {{request.user.total_balance}}</p>
+                    </li>
+                    <li>
+                        <p style="margin-left: 10px;">{{request.user}}</p>
+                    </li>
+                    <a href="/logout_view"><img src="../static/images/box-arrow-right.svg"
+                            style="margin-top: 8px; margin-left: 20px; width: 22px;"></a>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="main-container">
+            <div>
+                <!-- Add Friends -->
+                <div class="card">
+                    <h2>Add Friends</h2>
+                    <form action="{% url 'add_friend' %}" method="post" id="addFriendForm">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="text" name="username" placeholder="Enter Username" id="username" required>
+                            <input type="email" name="email" placeholder="Enter Email" id="email" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-symbols-sharp">Done</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Create Group -->
+                <div class="card">
+                    <h2>Create Group</h2>
+                    <form action="{% url 'add_group' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="text" name="groupname" placeholder="Enter Group Name" id="groupname" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-symbols-sharp">Done</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Add Expense -->
+            <div class="card">
+                <h2>Add Expense</h2>
+                <form action="{% url 'add_expense_separate' %}" method="post" class="add-expense-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="number" name="amount" placeholder=" ₹  Enter amount" id="amount" required>
+                        <input type="text" name="description" placeholder="Enter description" id="description" required>
+                    </div>
+                    <h5>Split Among:</h5>
+                    <ul>
+                        {% for friend in friend_list %}
+                        {% if friend.f_uid != request.user.username %}
+                        <li>
+                            <input type="checkbox" name="selected_items" value="{{ friend.f_uid }}" id="selected_items">
+                            <label for="selected_items">{{ friend.f_uid }}</label>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">Add Expense</button>
+                    </div>
+                </form>
+                <form action="{% url 'clear_records' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary" style="margin-top: 20px; margin-left: 0px;">Clear Records</button>
+                </form>
+            </div>
+        </div>
+
+        <fieldset style="width: 80%;">
+            <legend> Friends </legend>
+            <div class="friends">
+                {% for friend in friend_list %}
+                <div class="friend-card">
+                    <div class="friend-avatar">
+                        <img src="../static/images/people.png">
+                    </div>
+                    <div class="friend-info">
+                        <h3 class="friend-name">{{ friend.f_uid }}</h3>
+                        <p class="friend-balance">Owes: ₹ {{ friend.owe_amount }}</p>
+                    </div>
+                    <div class="friend-actions">
+                        <button type="button" class="icon-btn open-modal" data-target="#expenseModal"
+                            title="Add Expense">
+                            <img src="../static/images/plus.png">
+                        </button>
+                        <form action="{% url 'settlement_view' %}" method="post" class="settlement-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="friend_id" value="{{ friend.f_uid }}">
+                            <button type="submit" class="icon-btn" title="Settle">
+                                <img src="../static/images/news.png">
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend> Groups </legend>
+            <div class="groups">
+
+                {% for group in group_list %}
+                <div class="friend-row group-card">
+                    <div>
+                        <div class="icon friend-avatar">
+                            <img src="../static/images/group.png">
+                        </div>
+                        <div class="middle">
+                            <div class="left">
+                                <h3>{{ group.gname }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right side-icons">
+                        <form action="{% url 'group_view' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="groupname" value="{{ group.gname }}">
+                            <button type="submit" class="icon-btn open-modal2">
+                                <img src="../static/images/plus.png">
+                            </button>
+                        </form>
+
+                        <form action="{% url 'group_settlement_view' %}" method="post" class="settlement-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="groupname" value="{{ group.gname }}">
+                            <button type="submit" class="icon-btn">
+                                <img src="../static/images/news.png">
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </fieldset>
+
+        <div class="recent-activity">
+            <fieldset>
+                <legend>Recent Activity</legend>
+
+                <div class="activity-list">
+                    {% for expense in expense_list %}
+                    <div class="activity-card">
+                        <div class="activity-left">
+                            <p>{{ expense.payer_uid }}</p>
+                            <p>{{ expense.description }}    ₹ {{ expense.total_amount }}</p>
+                            <p></p>
+                        </div>
+                        <div class="activity-right">
+                            <p>{{ expense.date_field }} {{ expense.time_field }}</p>
+                            <p>Splited :  ₹ {{ expense.splited_amount }}</p>
+                        </div>
+                    </div>
+                    
+                    {% endfor %}
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Groups Activity</legend>
+                <div class="activity-list">
+                    {% for expense in group_expense_list %}
+                    <div class="activity-card">
+                        <div class="activity-left">
+                            <p>{{ expense.gid.gname }}</p>
+                            <p>{{ expense.description }}  ₹ {{ expense.total_amount }}</p>
+                            
+                        </div>
+                        <div class="activity-right">
+                            <p>{{ expense.date_field }}  {{ expense.time_field }}</p>
+                            
+                            <p>splited :  ₹ {{ expense.splited_amount }}</p>
+                        </div>
+                    </div>
+                    
+                    {% endfor %}
+                </div>
+            </fieldset>
+        </div>
+
+        <div id="expenseModal" class="modal">
+            <div class="modal-content">
+               {% include 'add_expense_form.html' %}
+               <button class="close" style="border: none;">&times;</button>
+            </div>
+         </div>
+      
+         <div id="expenseModal2" class="modal2">
+            <div class="modal-content2">
+               {% include 'group_form.html' %}
+               <button class="close2" style="border: none;">&times;</button>
+            </div>
+         </div>
+
+
+    </main>
+    <footer>
+        <p>&copy; 2024 Expense Tracker. All Rights Reserved.</p>
+    </footer>
+    
+    <script src="{% static '../static/js/model.js' %}"></script>
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const menu = document.getElementById('menu');
+
+        menuToggle.addEventListener('click', () => {
+            menu.classList.toggle('show');
+        });
+    </script>
+    
+</body>
+
+</html>

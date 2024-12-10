@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Group Members</title>
+    <style>
+        .group-form-container {
+            display: flex;
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .group-form-left,
+        .group-form-right {
+            flex: 1;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+        }
+
+        .container-content {
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .input-amount,
+        .input-description {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--secondary);
+            border-radius: 4px;
+        }
+
+        .input-group-form {
+            margin-bottom: 1rem;
+        }
+
+        .icon-button-form {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .icon-button-form:hover {
+            background-color: var(--primary);
+        }
+
+        h2 {
+            color: var(--black);
+        }
+
+        .font-h4 {
+            color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="group-form-container">
+        <div class="group-form-left">
+            <div class="section">
+                <form action="{% url 'add_group_members' %}" method="post">
+                    {% csrf_token %}
+                    <label for="friend_dropdown">Select a friend:</label><br>
+                    <select id="friend_dropdown" name="selected_value" class="input-amount">
+                        {% for friend in friend_list %}
+                        <option value="{{ friend.f_uid }}">{{ friend.f_uid }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" name="groupname" id="groupname" value="{{ groupname }}">
+                    <input type="submit" value="Add" class="icon-button-form">
+                </form>
+            </div>
+        
+            <div class="section container-content">
+                <div class="container-left">
+                    <h2>Members List:</h2>
+                    {% for member in members_list %}
+                    <h4 class="font-h4">{{ member.mid }}</h4>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="group-form-right">
+            <div class="section">
+                <div class="expense-container">
+                    <h2>Add Expense:</h2>
+                    <form action="{% url 'add_group_expense_record' %}" method="post">
+                        {% csrf_token %}
+                        <div class="input-group input-group-form">
+                            <label for="total_amount">Amount:</label>
+                            <input type="number" name="total_amount" class="input-amount" required>
+                        </div>
+
+                        <div class="input-group input-group-form">
+                            <label for="description">Description:</label>
+                            <input type="text" name="description" class="input-description">
+                        </div>
+
+                        <input type="hidden" name="groupname" value="{{ groupname }}">
+
+                        <input type="submit" value="Submit" class="icon-button-form">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/model.js' %}"></script>
+</body>
+</html>

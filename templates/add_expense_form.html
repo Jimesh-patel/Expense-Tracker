@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expense</title>
+
+</head>
+
+<body>
+    <div class="container2">
+        <form action="{% url 'add_expense_form' %}" method="post">
+            {% csrf_token %}
+            <div class="input-group-form">
+                <label for="total_amount">Amount:</label>
+                <div class="input-wrapper">
+                    <input type="number" name="total_amount" placeholder="₹" class="input-amount" required>
+                </div>
+            </div>
+
+            <div class="input-group-form">
+                <label for="description">Description:</label>
+                <input type="text" name="description" class="input-description">
+            </div>
+
+            <input type="hidden" name="friend_username">
+
+            <button type="submit" class="icon-button-form">
+                <div class="icon"><span>submit</span></div>
+            </button>
+        </form>
+    </div>
+
+    <script src="{% static 'js/model.js' %}"></script>
+</body>
+
+</html>
