@@ -12,5 +12,5 @@ document.querySelectorAll('.popup-container').forEach(function (popupContainer) 
         setTimeout(function () {
             popupContainer.parentNode && popupContainer.parentNode.removeChild(popupContainer);
         }, 500); // Wait for fade-out animation to complete
-    }, 100000);
+    }, 3000);
 });
