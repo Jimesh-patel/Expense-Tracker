@@ -1,0 +1,43 @@
+/* Error Messages */
+main .popup-container {
+    position: fixed;
+    top: 15%; /* Adjust vertical position */
+    right: 30px; /* Align to the left */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    max-width: 90%; /* Ensure it adjusts for smaller screens */
+    width: 300px; /* Default width for better alignment */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    animation: fade-in 0.5s ease-in-out; /* Fade-in animation */
+}
+
+/* Close button styling */
+main .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Fade-out animation for disappearing */
+@keyframes fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Fade-in animation for appearing */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

@@ -27,7 +27,7 @@ def signupForm_view(request):
             user = CustomUser.objects.create_user(username, email, password, phone_no=phone_no)
             if user:
                 login(request, user)
-                return redirect("dashboard1_view")
+                return redirect("index_view")
             else:
                 messages.error(request, 'Failed to create user. Please try again.')
 
@@ -41,7 +41,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect('dashboard1_view')
+            return redirect('index_view')
         else:
             messages.error(request, 'Invalid username or password.')
     return render(request, 'login.html')
@@ -53,7 +53,7 @@ def logout_view(request):
 
 # Dashboard view
 @login_required
-def dashboard1_view(request):
+def index_view(request):
     users = CustomUser.objects.all().exclude(username=request.user)
     friend_list = Friends_record.objects.filter(uid=request.user)
     group_query_set = Group.objects.filter(uid=request.user)
@@ -102,7 +102,7 @@ def dashboard1_view(request):
             'openModal': request.GET.get('openModal') == 'true'
         })
 
-    return render(request, "dashboard1.html", context)
+    return render(request, "index.html", context)
 
 # Add friend view
 @login_required
@@ -117,7 +117,7 @@ def add_friend(request):
 
             if current_user == friend_user:
                 messages.error(request, 'You cannot add yourself as a friend.')
-                return redirect("dashboard1_view")
+                return redirect("index_view")
 
             Friends_record.objects.create(uid=current_user, f_uid=friend_user)
             messages.success(request, 'Friend added successfully!')
@@ -126,7 +126,7 @@ def add_friend(request):
         except IntegrityError:
             messages.error(request, 'Friend already exists.')
 
-    return redirect("dashboard1_view")
+    return redirect("index_view")
 
 # Add group view
 @login_required
@@ -140,7 +140,7 @@ def add_group(request):
             messages.success(request, 'Group created successfully!')
         except IntegrityError:
             messages.error(request, 'Group name already exists.')
-    return redirect("dashboard1_view")
+    return redirect("index_view")
 
 # Add expense view
 @login_required
@@ -185,7 +185,7 @@ def add_expense_form(request):
         friend_relation.save()
         reverse_friend_relation.save()
 
-        return redirect("dashboard1_view")
+        return redirect("index_view")
 
     return render(request, 'add_expense_form.html')
 
@@ -213,9 +213,9 @@ def settlement_view(request):
         except Friends_record.DoesNotExist:
             return HttpResponse("Friend relationship does not exist", status=400)
         
-        return redirect("dashboard1_view")
+        return redirect("index_view")
     
-    return redirect("dashboard1_view")
+    return redirect("index_view")
 
 # Group view
 @login_required
@@ -223,7 +223,7 @@ def group_view(request):
     if request.method == 'POST':
         groupname = request.POST.get('groupname')
         group = Group.objects.get(gname=groupname)
-        url = f"{reverse('dashboard1_view')}?groupname={groupname}&openModal=true"
+        url = f"{reverse('index_view')}?groupname={groupname}&openModal=true"
         return redirect(url)
 
 # Add group members view
@@ -263,10 +263,10 @@ def add_group_members(request):
         except IntegrityError:
             messages.error(request, "There was an error adding the member to the group. Please try again.")
         
-        url = f"{reverse('dashboard1_view')}?groupname={gname}&openModal=true"
+        url = f"{reverse('index_view')}?groupname={gname}&openModal=true"
         return redirect(url)
 
-    return redirect("dashboard1_view")
+    return redirect("index_view")
 
 # Add group expense record view
 @login_required
@@ -303,9 +303,9 @@ def add_group_expense_record(request):
                 friend_relation.save()
                 reverse_friend_relation.save()
 
-        url = f"{reverse('dashboard1_view')}?groupname={groupname}&openModal=true"
+        url = f"{reverse('index_view')}?groupname={groupname}&openModal=true"
         return redirect(url)
-    return redirect('dashboard1_view')
+    return redirect('index_view')
 
 # Add expense separate view
 @login_required
@@ -348,7 +348,7 @@ def add_expense_separate(request):
         else:
             messages.error(request, 'No friends selected for splitting the expense.')
 
-    return redirect('dashboard1_view')
+    return redirect('index_view')
 
 
 # group settlement view
@@ -366,9 +366,9 @@ def group_settlement_view(request):
         except Exception as e:
             messages.error(request, f'An error occurred: {e}')
         
-        return redirect("dashboard1_view")
+        return redirect("index_view")
     
-    return redirect("dashboard1_view")
+    return redirect("index_view")
 
 
 # Clear all records where the current user is either the payer or the shared user and total_amount != splited_amount
@@ -393,6 +393,6 @@ def clear_records(request):
             # Handle any exceptions and inform the user
             messages.error(request, f'An error occurred: {e}')
         
-        return redirect("dashboard1_view")
+        return redirect("index_view")
     
-    return redirect("dashboard1_view")
+    return redirect("index_view")

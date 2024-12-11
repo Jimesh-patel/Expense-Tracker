@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../static/css/style-index.css">
     <link rel="stylesheet" href="../static/css/model.css">
+    <link rel="stylesheet" href="../static/css/error.css">
 </head>
 
 <body>
@@ -34,6 +35,15 @@
     </header>
 
     <main>
+        <div class="messages">
+            {% for message in messages %}
+            <div class="popup-container">
+                <div>{{ message }}</div>
+                <span class="close-btn">×</span>
+            </div>
+            {% endfor %}
+        </div>
+        
         <div class="main-container">
             <div>
                 <!-- Add Friends -->
@@ -92,7 +102,8 @@
                 </form>
                 <form action="{% url 'clear_records' %}" method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-secondary" style="margin-top: 20px; margin-left: 0px;">Clear Records</button>
+                    <button type="submit" class="btn btn-secondary" style="margin-top: 20px; margin-left: 0px;">Clear
+                        Records</button>
                 </form>
             </div>
         </div>
@@ -175,15 +186,15 @@
                     <div class="activity-card">
                         <div class="activity-left">
                             <p>{{ expense.payer_uid }}</p>
-                            <p>{{ expense.description }}    ₹ {{ expense.total_amount }}</p>
+                            <p>{{ expense.description }} ₹ {{ expense.total_amount }}</p>
                             <p></p>
                         </div>
                         <div class="activity-right">
                             <p>{{ expense.date_field }} {{ expense.time_field }}</p>
-                            <p>Splited :  ₹ {{ expense.splited_amount }}</p>
+                            <p>Splited : ₹ {{ expense.splited_amount }}</p>
                         </div>
                     </div>
-                    
+
                     {% endfor %}
                 </div>
             </fieldset>
@@ -195,16 +206,16 @@
                     <div class="activity-card">
                         <div class="activity-left">
                             <p>{{ expense.gid.gname }}</p>
-                            <p>{{ expense.description }}  ₹ {{ expense.total_amount }}</p>
-                            
+                            <p>{{ expense.description }} ₹ {{ expense.total_amount }}</p>
+
                         </div>
                         <div class="activity-right">
-                            <p>{{ expense.date_field }}  {{ expense.time_field }}</p>
-                            
-                            <p>splited :  ₹ {{ expense.splited_amount }}</p>
+                            <p>{{ expense.date_field }} {{ expense.time_field }}</p>
+
+                            <p>splited : ₹ {{ expense.splited_amount }}</p>
                         </div>
                     </div>
-                    
+
                     {% endfor %}
                 </div>
             </fieldset>
@@ -212,34 +223,38 @@
 
         <div id="expenseModal" class="modal">
             <div class="modal-content">
-               {% include 'add_expense_form.html' %}
-               <button class="close" style="border: none;">&times;</button>
+                {% include 'add_expense_form.html' %}
+                <button class="close" style="border: none;">&times;</button>
             </div>
-         </div>
-      
-         <div id="expenseModal2" class="modal2">
+        </div>
+
+        <div id="expenseModal2" class="modal2">
             <div class="modal-content2">
-               {% include 'group_form.html' %}
-               <button class="close2" style="border: none;">&times;</button>
+                {% include 'group_form.html' %}
+                <button class="close2" style="border: none;">&times;</button>
             </div>
-         </div>
+        </div>
 
 
     </main>
     <footer>
         <p>&copy; 2024 Expense Tracker. All Rights Reserved.</p>
     </footer>
-    
+
     <script src="{% static '../static/js/model.js' %}"></script>
+    <script src="{% static '../static/js/error.js' %}"></script>
     <script>
+        // Header menu
         const menuToggle = document.getElementById('menu-toggle');
         const menu = document.getElementById('menu');
 
         menuToggle.addEventListener('click', () => {
             menu.classList.toggle('show');
         });
+
+        
     </script>
-    
+
 </body>
 
 </html>

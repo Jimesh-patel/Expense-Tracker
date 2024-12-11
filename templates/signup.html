@@ -2,9 +2,11 @@
 <html lang="en">
 
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Expense Tracker</title>
+    <link rel="stylesheet" href="../static/css/error.css">
     <style>
         :root {
             --primary-dark: #3D52A0;
@@ -86,27 +88,7 @@
             color: var(--primary-dark);
         }
 
-        /* Popup messages */
-        .popup-container {
-            position: fixed;
-            top: 10%;
-            right: -5%;
-            transform: translate(-50%, -50%);
-            background-color: #fff;
-            border: 1px solid #ccc;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            z-index: 9999;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
+        
         @media (max-width: 425px) {
             .container {
                 padding: 30px;
@@ -131,14 +113,16 @@
 
 <body>
 
-    <div class="messages">
-        {% for message in messages %}
-        <div class="popup-container">
-            <div>{{ message }}</div>
-            <span class="close-btn">×</span>
+    <main>
+        <div class="messages">
+          {% for message in messages %}
+          <div class="popup-container">
+              <div>{{ message }}</div>
+              <span class="close-btn">×</span>
+          </div>
+          {% endfor %}
         </div>
-        {% endfor %}
-    </div>
+    </main>
 
     <div class="container">
         <h2>Sign Up</h2>
@@ -157,16 +141,9 @@
             <span>Already have an account? </span><a href="/login_view">Login</a>
         </div>
     </div>
+    
 </body>
 
-<script>
-    var closeButtons = document.querySelectorAll('.close-btn');
-    closeButtons.forEach(function (closeButton) {
-        closeButton.addEventListener('click', function () {
-            var popupContainer = closeButton.parentNode;
-            popupContainer.parentNode.removeChild(popupContainer);
-        });
-    });
-</script>
+<script src="{% static '../static/js/error.js' %}"></script>
 
 </html>
